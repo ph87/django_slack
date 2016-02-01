@@ -14,4 +14,4 @@
 Fill the `url` field with the command url
 # Triggle the command
 
-Type the command in slack, and slack will call the give command url.
+Type the command in slack, and slack will call the given command url.
