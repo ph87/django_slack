@@ -1,7 +1,35 @@
 from django.http import HttpResponse
 from .models import Command
+from .models import CommandLog
 
 import request
+
+def make_log(request, response):
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        team_domain = request.POST.get('team_domain')
+        channel_id = request.POST.get('channel_id')
+        channel_name = request.POST.get('channel_name')
+        user_id = request.POST.get('user_id')
+        user_name = request.POST.get('user_name')
+        command = request.POST.get('command')
+        text = request.POST.get('text')
+        response_url = requeset.POST.get('response_url')
+        response_payload = response.content
+        CommandLog.objects.create(
+                team_id=team_id,
+                team_domain=team_domain,
+                channel_id=channel_id,
+                channel_name=channel_name,
+                user_id=user_id,
+                user_name=user_name,
+                command=command,
+                text=text,
+                response_url=response_url,
+                response_payload=response_payload,
+                )
+
+
 
 def slack_callback(request, text):
     if request.POST.get('response_url'):
