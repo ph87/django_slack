@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from .models import Command
 from .models import CommandLog
 
-import request
+import requests
 
 def make_log(request, response):
     if request.method == 'POST':
@@ -14,7 +14,7 @@ def make_log(request, response):
         user_name = request.POST.get('user_name')
         command = request.POST.get('command')
         text = request.POST.get('text')
-        response_url = requeset.POST.get('response_url')
+        response_url = request.POST.get('response_url')
         response_payload = response.content
         CommandLog.objects.create(
                 team_id=team_id,
@@ -51,11 +51,13 @@ def slack_cli(request, command):
             command_func = command_dict.get('command_func') or (lambda *args, **kwargs: None)
             result = command_func(request)
             slack_callback(request, result)
-            return HttpResponse(result)
+            response =  HttpResponse(result)
         else:
-            return HttpResponse(status=401)
+            response =  HttpResponse(status=401)
     except Command.DoesNotExist as error:
-        return HttpResponse(status=404)
+        response =  HttpResponse(status=404)
     except Exception as error:
         slack_callback(request, error.message)
-        return HttpResponse(status=500)
+        response =  HttpResponse(status=500)
+    make_log(request, response)
+    return response
